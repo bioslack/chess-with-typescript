@@ -42,6 +42,7 @@ class BoardPosition extends GameElement implements DragTarget {
       this.element.innerHTML = "";
       this.element.appendChild(piece.element);
     }
+    console.log(this.gameState);
   }
 }
 

@@ -25,7 +25,10 @@ export abstract class Piece extends GameElement implements Draggable {
 
   abstract dragEndHandler(event: DragEvent): void;
 
-  abstract dragStartHandler(event: DragEvent): void;
+  dragStartHandler(event: DragEvent) {
+    event.dataTransfer!.setData("text/plain", this.position);
+    event.dataTransfer!.effectAllowed = "move";
+  }
 }
 
 export class Pawn extends Piece {
@@ -34,11 +37,6 @@ export class Pawn extends Piece {
   }
 
   dragEndHandler(event: DragEvent) {}
-
-  dragStartHandler(event: DragEvent) {
-    event.dataTransfer!.setData("text/plain", this.position);
-    event.dataTransfer!.effectAllowed = "move";
-  }
 }
 
 export class Rook extends Piece {
@@ -48,7 +46,7 @@ export class Rook extends Piece {
 
   dragEndHandler(event: DragEvent) {}
 
-  dragStartHandler(event: DragEvent) {}
+  
 }
 
 export class Knight extends Piece {
@@ -58,7 +56,7 @@ export class Knight extends Piece {
 
   dragEndHandler(event: DragEvent) {}
 
-  dragStartHandler(event: DragEvent) {}
+  
 }
 
 export class Bishop extends Piece {
@@ -68,7 +66,7 @@ export class Bishop extends Piece {
 
   dragEndHandler(event: DragEvent) {}
 
-  dragStartHandler(event: DragEvent) {}
+  
 }
 
 export class King extends Piece {
@@ -78,7 +76,7 @@ export class King extends Piece {
 
   dragEndHandler(event: DragEvent) {}
 
-  dragStartHandler(event: DragEvent) {}
+  
 }
 
 export class Queen extends Piece {
@@ -88,5 +86,5 @@ export class Queen extends Piece {
 
   dragEndHandler(event: DragEvent) {}
 
-  dragStartHandler(event: DragEvent) {}
+  
 }

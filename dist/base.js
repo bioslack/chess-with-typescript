@@ -26,6 +26,7 @@ class BoardPosition extends GameElement {
             this.element.innerHTML = "";
             this.element.appendChild(piece.element);
         }
+        console.log(this.gameState);
     }
 }
 export class GameBoard extends GameElement {
