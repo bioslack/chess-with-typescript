@@ -5,6 +5,7 @@ const columns = "abcdefgh";
 class BoardPosition extends GameElement {
     constructor(element, color, position) {
         super(element);
+        this.gameState = GameState.getInstance();
         this.element.setAttribute("draggable", "false");
         this.element.addEventListener("drop", this.dropHandler.bind(this));
         this.element.addEventListener("dragover", this.dragOverHandler.bind(this));
@@ -15,38 +16,39 @@ class BoardPosition extends GameElement {
     dragLeaveHandler(event) { }
     dragOverHandler(event) {
         event.preventDefault();
-        // console.log(event);
     }
     dropHandler(event) {
         event.preventDefault();
         const p = event.dataTransfer.getData("text/plain");
         if (!this.element.hasChildNodes()) {
-            console.log(p);
+            const piece = this.gameState.pieces.find((piece) => piece.position === p);
+            piece.position = this.position;
+            this.element.innerHTML = "";
+            this.element.appendChild(piece.element);
         }
     }
 }
 export class GameBoard extends GameElement {
     constructor(element) {
         super(element);
-        this.positions = [];
-        this.pieces = [];
+        this.gameState = GameState.getInstance();
         for (let i = 0; i < 8; i++)
             for (let j = 0; j < 8; j++) {
-                this.positions.push(new BoardPosition(document.createElement("div"), (i + j) % 2 == 0 ? "white" : "black", `${columns[j]}${rows[i]}`));
+                this.gameState.positions.push(new BoardPosition(document.createElement("div"), (i + j) % 2 == 0 ? "white" : "black", `${columns[j]}${rows[i]}`));
             }
         this.renderBoard();
     }
     renderBoard() {
-        for (const position of this.positions) {
+        for (const position of this.gameState.positions) {
             this.element.appendChild(position.element);
-            const piece = this.pieces.find((p) => p.position === position.position);
+            const piece = this.gameState.pieces.find((p) => p.position === position.position);
             if (piece) {
                 position.element.appendChild(piece.element);
             }
         }
     }
     loadInitialPosition() {
-        this.pieces = [
+        this.gameState.pieces = [
             new Pawn("white", "a2"),
             new Pawn("white", "b2"),
             new Pawn("white", "c2"),
@@ -83,9 +85,16 @@ export class GameBoard extends GameElement {
         this.renderBoard();
     }
 }
-export class Game {
-    constructor(chessBoard, dashBoard) {
-        this.gameBoard = new GameBoard(chessBoard);
+export class GameState {
+    constructor() {
+        this.positions = [];
+        this.pieces = [];
+    }
+    static getInstance() {
+        if (!this.instance) {
+            this.instance = new GameState();
+        }
+        return this.instance;
     }
 }
 //# sourceMappingURL=base.js.map

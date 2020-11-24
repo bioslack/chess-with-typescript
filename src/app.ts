@@ -1,8 +1,6 @@
-import { Game } from "./base.js";
+import { GameBoard } from "./base.js";
 
-const game = new Game(
-  document.getElementById("chessboard")! as HTMLDivElement,
-  document.getElementById("dashboard")! as HTMLDivElement
+const gameBoard = new GameBoard(
+  document.getElementById("chessboard")! as HTMLDivElement
 );
-
-game.gameBoard.loadInitialPosition();
+gameBoard.loadInitialPosition();

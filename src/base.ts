@@ -6,6 +6,7 @@ const columns = "abcdefgh";
 
 class BoardPosition extends GameElement implements DragTarget {
   position: string;
+  gameState = GameState.getInstance();
 
   constructor(
     element: HTMLDivElement,
@@ -28,27 +29,30 @@ class BoardPosition extends GameElement implements DragTarget {
 
   dragOverHandler(event: DragEvent) {
     event.preventDefault();
-    // console.log(event);
   }
 
   dropHandler(event: DragEvent) {
     event.preventDefault();
     const p = event.dataTransfer!.getData("text/plain");
     if (!this.element.hasChildNodes()) {
-      console.log(p);
+      const piece = this.gameState.pieces.find(
+        (piece) => piece.position === p
+      )!;
+      piece.position = this.position;
+      this.element.innerHTML = "";
+      this.element.appendChild(piece.element);
     }
   }
 }
 
 export class GameBoard extends GameElement {
-  positions: BoardPosition[] = [];
-  pieces: Piece[] = [];
+  gameState = GameState.getInstance();
 
   constructor(element: HTMLDivElement) {
     super(element);
     for (let i = 0; i < 8; i++)
       for (let j = 0; j < 8; j++) {
-        this.positions.push(
+        this.gameState.positions.push(
           new BoardPosition(
             document.createElement("div"),
             (i + j) % 2 == 0 ? "white" : "black",
@@ -61,9 +65,11 @@ export class GameBoard extends GameElement {
   }
 
   renderBoard() {
-    for (const position of this.positions) {
+    for (const position of this.gameState.positions) {
       this.element.appendChild(position.element);
-      const piece = this.pieces.find((p) => p.position === position.position);
+      const piece = this.gameState.pieces.find(
+        (p) => p.position === position.position
+      );
       if (piece) {
         position.element.appendChild(piece.element);
       }
@@ -71,7 +77,7 @@ export class GameBoard extends GameElement {
   }
 
   loadInitialPosition() {
-    this.pieces = [
+    this.gameState.pieces = [
       new Pawn("white", "a2"),
       new Pawn("white", "b2"),
       new Pawn("white", "c2"),
@@ -109,10 +115,16 @@ export class GameBoard extends GameElement {
   }
 }
 
-export class Game {
-  gameBoard: GameBoard;
+export class GameState {
+  positions: BoardPosition[] = [];
+  pieces: Piece[] = [];
+  private static instance?: GameState;
+  private constructor() {}
 
-  constructor(chessBoard: HTMLDivElement, dashBoard: HTMLDivElement) {
-    this.gameBoard = new GameBoard(chessBoard);
+  static getInstance() {
+    if (!this.instance) {
+      this.instance = new GameState();
+    }
+    return this.instance;
   }
 }

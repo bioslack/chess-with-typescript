@@ -1,4 +1,4 @@
-import { Game } from "./base.js";
-const game = new Game(document.getElementById("chessboard"), document.getElementById("dashboard"));
-game.gameBoard.loadInitialPosition();
+import { GameBoard } from "./base.js";
+const gameBoard = new GameBoard(document.getElementById("chessboard"));
+gameBoard.loadInitialPosition();
 //# sourceMappingURL=app.js.map
